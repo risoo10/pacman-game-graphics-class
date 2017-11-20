@@ -6,6 +6,8 @@
 #include "food.h"
 #include "scene.h"
 #include "math.h"
+#include "ghost.h"
+#include "drink.h"
 
 #include <shaders/diffuse_vert_glsl.h>
 #include <shaders/diffuse_frag_glsl.h>
@@ -91,15 +93,46 @@ bool Pacman::update(Scene &scene, float dt) {
     // Hit detection
     for ( auto& obj : scene.objects ) {
 
-        // We need to detect eaten food
+        // Detect eaten food
         auto food = dynamic_cast<Food*>(obj.get());
-        if (!food) continue;
+        if (food){
 
-        if (distance(position, food->position) < 0.4f) {
+            if (distance(position, food->position) < 0.4f) {
 
-            // Set foot as eaten
-            food->eaten = true;
-            eatenFood++;
+                // Set foot as eaten
+                food->eaten = true;
+                eatenFood++;
+            }
+
+        } else {
+
+            // Detect drink
+            auto drink = dynamic_cast<Drink*>(obj.get());
+            if (drink){
+
+
+
+
+            } else {
+
+                // Detect Ghost
+                auto ghost = dynamic_cast<Ghost*>(obj.get());
+                if (ghost){
+
+                    if(distance(position, food->position) < 0.4f){
+
+                        if(ghost->boozed){
+                            ghost->eaten = true;
+                        } else {
+                            // Game over
+                            return false;
+                        }
+                    }
+
+                } else {
+                    continue;
+                }
+            }
         }
     }
 

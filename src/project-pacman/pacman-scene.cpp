@@ -82,13 +82,6 @@ private:
                 }
             }
         }
-
-        // Create Ghosts
-
-        // Create Food
-
-        // Create Flashback
-
     }
 
 public:

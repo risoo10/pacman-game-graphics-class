@@ -33,7 +33,7 @@ void Scene::render() {
     obj->render(*this);
 
   // Render pacman
-  if(pacman != nullptr){
+  if(pacman){
     pacman->render(*this);
   }
 }
