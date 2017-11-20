@@ -24,6 +24,8 @@ private:
     glm::vec3 movement = {0, 0, 0};
     float speed = 0.005f;
 
+    int eatenFood = 0;
+
 
 public:
 
@@ -44,6 +46,8 @@ public:
      */
     void render(Scene &scene) override;
 
+
+    glm::vec3 getPosition();
 
 };
 

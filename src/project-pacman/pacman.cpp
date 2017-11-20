@@ -3,11 +3,13 @@
 //
 
 #include "pacman.h"
+#include "food.h"
 #include "scene.h"
 #include "math.h"
 
 #include <shaders/diffuse_vert_glsl.h>
 #include <shaders/diffuse_frag_glsl.h>
+#include <src/gl9_scene/explosion.h>
 
 using namespace std;
 using namespace glm;
@@ -25,7 +27,7 @@ Pacman::Pacman() {
 
     // Initialize static resources if needed
     if (!shader) shader = make_unique<Shader>(diffuse_vert_glsl, diffuse_frag_glsl);
-    //if (!texture) texture = make_unique<Texture>(image::loadBMP("sphere.bmp"));
+    if (!texture) texture = make_unique<Texture>(image::loadBMP("sphere.bmp"));
     if (!mesh) mesh = make_unique<Mesh>("sphere.obj");
 
     position.y = 0.2;
@@ -85,6 +87,21 @@ bool possibleMove(vec2 direction, vec3 position, Scene &scene){
 
 // Update function
 bool Pacman::update(Scene &scene, float dt) {
+
+    // Hit detection
+    for ( auto& obj : scene.objects ) {
+
+        // We need to detect eaten food
+        auto food = dynamic_cast<Food*>(obj.get());
+        if (!food) continue;
+
+        if (distance(position, food->position) < 0.4f) {
+
+            // Set foot as eaten
+            food->eaten = true;
+            eatenFood++;
+        }
+    }
 
     // Proces next directions
     if (scene.keyboard[GLFW_KEY_RIGHT]){ // Right
@@ -159,10 +176,16 @@ void Pacman::render(Scene &scene) {
 
     // render mesh
     shader->setUniform("ModelMatrix", modelMatrix);
-    //shader->setUniform("Texture", *texture);
+    shader->setUniform("Texture", *texture);
     mesh->render();
 
 }
+
+
+glm::vec3 Pacman::getPosition(){
+    return position;
+}
+
 
 
 

@@ -7,6 +7,7 @@
 
 #include "object.h"
 #include "camera.h"
+#include "pacman.h"
 
 
 /*
@@ -29,6 +30,9 @@ class Scene {
 
     // Camera object
     std::unique_ptr<Camera> camera;
+
+    // Pacman object
+    std::unique_ptr<Pacman> pacman;
 
     // Mapa pre hru
     // Create Map

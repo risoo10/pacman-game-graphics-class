@@ -34,6 +34,6 @@ public:
   /*!
    * Update Camera viewMatrix based on up, position and back vectors
    */
-  void update(std::map<int, int> keyboard, float dt);
+  void update(std::map<int, int> keyboard, float dt, glm::vec3 pacmanPosition);
 };
 

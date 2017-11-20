@@ -31,6 +31,10 @@ Food::Food() {
 
 bool Food::update(Scene &scene, float dt) {
 
+    if(eaten){
+        return false;
+    }
+
     bounce += dt * 200;
     if(bounce >= 360.0f){
         bounce = 0;

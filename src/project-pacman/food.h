@@ -23,6 +23,9 @@ private:
 
 public:
 
+    // Set as eaten
+    bool eaten = false;
+
     // Create new Brick
     Food();
 

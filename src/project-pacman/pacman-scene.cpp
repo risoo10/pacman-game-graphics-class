@@ -78,7 +78,7 @@ private:
                     auto pacman = make_unique<Pacman>();
                     pacman->position.z = (10 - y) - scene.mapRadius;
                     pacman->position.x = x - scene.mapRadius;
-                    scene.objects.push_back(move(pacman));
+                    scene.pacman = move(pacman);
                 }
             }
         }
