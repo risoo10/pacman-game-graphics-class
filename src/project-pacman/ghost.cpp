@@ -3,6 +3,7 @@
 //
 
 #include "ghost.h"
+#include "pacman.h"
 #include "scene.h"
 
 
@@ -24,59 +25,9 @@ Ghost::Ghost() {
     // Initialize static resources if needed
     if (!shader) shader = make_unique<Shader>(diffuse_vert_glsl, diffuse_frag_glsl);
     if (!texture) texture = make_unique<Texture>(image::loadBMP("pineapple.bmp"));
-    if (!mesh) mesh = make_unique<Mesh>("Pineapple.obj");
+    if (!mesh) mesh = make_unique<Mesh>("cube.obj");
 
-    scale = vec3{0.15f, 0.15f, 0.15f};
-}
-
-// Returns true if position of the object is near the middle of coordinates
-bool inTheMiddle(vec3 position){
-
-    // If in the middle
-    if(fmod(position.x, 1.0f) == 0 && fmod(position.z, 1.0f) == 0){
-        return true;
-    }
-
-    return false;
-}
-
-bool oppositeDirection(vec2 next, vec2 actual){
-
-    // If next direction not set
-    if(next.x == 0 && next.y == 0){
-        return false;
-    }
-
-    // Right Left opposite
-    if((next.x != actual.x && next.x + actual.x == 0) && next.y == actual.y){
-        return true;
-    }
-
-    // Top Down opposite
-    if((next.y != actual.y && next.y + actual.y == 0) && next.x == actual.x){
-        return true;
-    }
-
-    return false;
-}
-
-bool possibleMove(vec2 direction, vec3 position, Scene &scene){
-
-    // Return if direction not set
-    if(direction.x == 0 && direction.y == 0){
-        return false;
-    }
-
-    // Map coordinates of the object to map coordinates
-    int x = (int)(position.x + scene.mapRadius);
-    int y = (int)(scene.mapRadius - position.z);
-
-    // Check if it is the possible move
-    if(scene.map[y + (int)direction.y][x + (int)direction.x] != 1){
-        return true;
-    }
-
-    return false;
+    scale = vec3{0.5f, 0.5f, 0.5f};
 }
 
 
@@ -88,10 +39,22 @@ bool Ghost::update(Scene &scene, float dt) {
         return false;
     }
 
-    // Random movement of the ghost
-    if(inTheMiddle(position)){
+    // If boozed then slow
+    if(boozed){
+        boozedAge += 0.001;
+        speed = slowSpeed;
 
-        vec2 newDirection;
+        if(boozedAge > maxBoozedAge){
+            boozed = false;
+            boozedAge = 0;
+        }
+
+    } else {
+        speed = fastSpeed;
+    }
+
+    // Random movement of the ghost
+    if(inTheMiddle(position) && (!possibleMove(newDirection, position, scene) || (int)(linearRand(0, 3)) == 0)){
 
         do{
             int rand = linearRand(0, 3);
@@ -100,20 +63,33 @@ bool Ghost::update(Scene &scene, float dt) {
                     newDirection.x = 1;
                     newDirection.y = 0;
                     break;
+                case 1: // Left
+                    newDirection.x = -1;
+                    newDirection.y = 0;
+                    break;
+                case 2: // Up
+                    newDirection.x = 0;
+                    newDirection.y = 1;
+                    break;
+                case 3: // Down
+                    newDirection.x = 0;
+                    newDirection.y = -1;
+                    break;
             }
 
+        } while(!possibleMove(newDirection, position, scene));
 
-        } while(possibleMove(newDirection, position, scene));
-
+        movement = vec3{newDirection.x * speed, 0, newDirection.y * speed * -1};
     }
 
-
-
     // Update position by movement
-    position += movement;
+    if(dt) {
+        position += movement;
+    }
+
+    // Round to 3 decimal plates for precise movement
     position.x = (float)(round(position.x * 1000) / 1000.0); // Round to 3 decimal plates
     position.z = (float)(round(position.z * 1000) / 1000.0); // Round to 3 decimal plates
-
 
 
     generateModelMatrix();

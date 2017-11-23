@@ -9,7 +9,7 @@
 #include <ppgso.h>
 #include "object.h"
 
-class Floor final : public Object {
+class Floor final : public ObjectRen {
 
 private:
     // Static resources (Shared between instances)

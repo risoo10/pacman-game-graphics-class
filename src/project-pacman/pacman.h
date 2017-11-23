@@ -10,7 +10,7 @@
 #include <queue>
 #include "object.h"
 
-class Pacman final : public Object {
+class Pacman final : public ObjectRen {
 
 private:
     // Static resources (Shared between instances)
@@ -18,11 +18,12 @@ private:
     static std::unique_ptr<ppgso::Shader> shader;
     static std::unique_ptr<ppgso::Texture> texture;
 
+    float const fastSpeed = 0.004;
 
     glm::vec2 direction = {0, 0};
     glm::vec2 nextDirection = {0, 0};
     glm::vec3 movement = {0, 0, 0};
-    float speed = 0.005f;
+    float speed = fastSpeed;
 
     int eatenFood = 0;
 
@@ -31,6 +32,10 @@ public:
 
     // Create new Pacman
     Pacman();
+
+
+
+
 
     /*!
    * Update player position considering keyboard inputs
@@ -45,6 +50,9 @@ public:
      * @param scene Scene to render in
      */
     void render(Scene &scene) override;
+
+
+
 
 
     glm::vec3 getPosition();

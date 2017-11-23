@@ -9,7 +9,7 @@
 #include <ppgso.h>
 #include "object.h"
 
-class Ghost final : public Object {
+class Ghost final : public ObjectRen {
 
 private:
     // Static resources (Shared between instances)
@@ -17,11 +17,15 @@ private:
     static std::unique_ptr<ppgso::Shader> shader;
     static std::unique_ptr<ppgso::Texture> texture;
 
-    float speed = 0.005;
+    float const fastSpeed = 0.004;
+    float const slowSpeed = 0.001;
 
-    glm::vec3 direction = {0,0,0};
-    glm::vec3 nextDirection = {0,0,0};
-    glm::vec2 movement = {0,0};
+    float speed = fastSpeed;
+
+    float maxBoozedAge = 3;
+
+    glm::vec2 newDirection = {0,0};
+    glm::vec3 movement = {0,0,0};
 
 
 public:
@@ -29,6 +33,8 @@ public:
     // Ghost state
     bool boozed = false;
     bool eaten = false;
+
+    float boozedAge = 0;
 
 
     // Create new Brick

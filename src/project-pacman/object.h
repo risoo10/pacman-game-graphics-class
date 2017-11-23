@@ -13,13 +13,13 @@ class Scene;
  *  All objects in the scene should be able to update and render
  *  Generally we also want to keep position, rotation and scale for each object to generate a modelMatrix
  */
-class Object {
+class ObjectRen {
 public:
-  // Define default constructors as this is an abstract class
-  Object() = default;
-  Object(const Object&) = default;
-  Object(Object&&) = default;
-  virtual ~Object() {};
+    // Define default constructors as this is an abstract class
+    ObjectRen() = default;
+    ObjectRen(const ObjectRen&) = default;
+    ObjectRen(ObjectRen&&) = default;
+    virtual ~ObjectRen() {};
 
   /*!
    * Update Object parameters, usually used to update the modelMatrix based on position, scale and rotation
@@ -46,6 +46,13 @@ protected:
   /*!
    * Generate modelMatrix from position, rotation and scale
    */
-  void generateModelMatrix();
+    void generateModelMatrix();
+
+    bool possibleMove(glm::vec2 direction, glm::vec3 position, Scene &scene);
+
+    bool oppositeDirection(glm::vec2 next, glm::vec2 actual);
+
+    bool inTheMiddle(glm::vec3 position);
+
 };
 

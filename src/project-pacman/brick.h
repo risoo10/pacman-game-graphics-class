@@ -10,7 +10,7 @@
 #include <ppgso.h>
 #include "object.h"
 
-class Brick final : public Object {
+class Brick final : public ObjectRen {
 
 private:
     // Static resources (Shared between instances)

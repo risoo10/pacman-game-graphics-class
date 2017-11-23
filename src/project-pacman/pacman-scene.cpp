@@ -19,6 +19,7 @@
 #include "food.h"
 #include "drink.h"
 #include "pacman.h"
+#include "ghost.h"
 
 
 using namespace std;
@@ -68,17 +69,25 @@ private:
                     auto food = make_unique<Food>();
                     food->position.z = (10 - y) - scene.mapRadius;
                     food->position.x = x - scene.mapRadius;
-                    scene.objects.push_back(move(food));
+                    scene.foods.push_back(move(food));
                 } else if(scene.map[y][x] == 2){ // Drink if map is 2
                     auto pepsi = make_unique<Drink>();
                     pepsi->position.z = (10 - y) - scene.mapRadius;
                     pepsi->position.x = x - scene.mapRadius;
-                    scene.objects.push_back(move(pepsi));
+                    scene.drinks.push_back(move(pepsi));
                 } else if(scene.map[y][x] == 3){ // Pacmaaaan if map is 3
                     auto pacman = make_unique<Pacman>();
                     pacman->position.z = (10 - y) - scene.mapRadius;
                     pacman->position.x = x - scene.mapRadius;
                     scene.pacman = move(pacman);
+                } else if(scene.map[y][x] == 4){ // Ghost starts here
+                    for(int i = 0; i < 4; i++){
+                        auto ghost = make_unique<Ghost>();
+                        ghost->position.z = (10 - y) - scene.mapRadius;
+                        ghost->position.x = x - scene.mapRadius;
+                        scene.ghosts.push_back(move(ghost));
+                    }
+
                 }
             }
         }

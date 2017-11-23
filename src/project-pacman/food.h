@@ -9,7 +9,7 @@
 #include <ppgso.h>
 #include "object.h"
 
-class Food final : public Object {
+class Food final : public ObjectRen {
 
 private:
     // Static resources (Shared between instances)

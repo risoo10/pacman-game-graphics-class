@@ -8,7 +8,7 @@
 #include <ppgso.h>
 #include "object.h"
 
-class Drink final : public Object {
+class Drink final : public ObjectRen {
 
 private:
     // Static resources (Shared between instances)
@@ -16,10 +16,10 @@ private:
     static std::unique_ptr<ppgso::Shader> shader;
     static std::unique_ptr<ppgso::Texture> texture;
 
-
-    // Dalsie parametre
-
 public:
+
+    // Drinked
+    bool drinked = false;
 
     // Create new Brick
     Drink();

@@ -36,105 +36,63 @@ Pacman::Pacman() {
 
 }
 
-// Returns true if position of the object is near the middle of coordinates
-bool inTheMiddle(vec3 position){
-
-    // If in the middle
-    if(fmod(position.x, 1.0f) == 0 && fmod(position.z, 1.0f) == 0){
-        return true;
-    }
-
-    return false;
-}
-
-bool oppositeDirection(vec2 next, vec2 actual){
-
-    // If next direction not set
-    if(next.x == 0 && next.y == 0){
-        return false;
-    }
-
-    // Right Left opposite
-    if((next.x != actual.x && next.x + actual.x == 0) && next.y == actual.y){
-        return true;
-    }
-
-    // Top Down opposite
-    if((next.y != actual.y && next.y + actual.y == 0) && next.x == actual.x){
-        return true;
-    }
-
-    return false;
-}
-
-bool possibleMove(vec2 direction, vec3 position, Scene &scene){
-
-    // Return if direction not set
-    if(direction.x == 0 && direction.y == 0){
-        return false;
-    }
-
-    // Map coordinates of the object to map coordinates
-    int x = (int)(position.x + scene.mapRadius);
-    int y = (int)(scene.mapRadius - position.z);
-
-    // Check if it is the possible move
-    if(scene.map[y + (int)direction.y][x + (int)direction.x] != 1){
-        return true;
-    }
-
-    return false;
-}
-
 
 // Update function
 bool Pacman::update(Scene &scene, float dt) {
 
-    // Hit detection
-    for ( auto& obj : scene.objects ) {
 
-        // Detect eaten food
-        auto food = dynamic_cast<Food*>(obj.get());
-        if (food){
+    // Hit detection with ghosts
+    for ( auto& obj : scene.ghosts ) {
 
-            if (distance(position, food->position) < 0.4f) {
+        auto ghost = dynamic_cast<Ghost*>(obj.get());
 
-                // Set foot as eaten
-                food->eaten = true;
-                eatenFood++;
-            }
+        if (distance(position, ghost->position) < 0.8f) {
 
-        } else {
-
-            // Detect drink
-            auto drink = dynamic_cast<Drink*>(obj.get());
-            if (drink){
-
-
-
-
+            if(ghost->boozed){
+                // Set ghost as eaten and add 5 extra points
+                ghost->eaten = true;
+                eatenFood += 5;
             } else {
-
-                // Detect Ghost
-                auto ghost = dynamic_cast<Ghost*>(obj.get());
-                if (ghost){
-
-                    if(distance(position, food->position) < 0.4f){
-
-                        if(ghost->boozed){
-                            ghost->eaten = true;
-                        } else {
-                            // Game over
-                            return false;
-                        }
-                    }
-
-                } else {
-                    continue;
-                }
+                // Game over
+                return false;
             }
         }
     }
+
+    // Hit detection with food
+    for ( auto& obj : scene.foods ) {
+
+        auto food = dynamic_cast<Food*>(obj.get());
+
+        // Food object
+        if (distance(position, food->position) < 0.4f) {
+
+            // Set foot as eaten
+            food->eaten = true;
+            eatenFood++;
+        }
+    }
+
+    // Hit detection with drink
+    for ( auto& obj : scene.drinks ) {
+
+        auto drink = dynamic_cast<Drink*>(obj.get());
+
+        if (distance(position, drink->position) < 0.4f) {
+
+            // Set drink as drinked
+            drink->drinked = true;
+
+            // Set every ghost as boozed for few seconds
+            for(auto& obj : scene.ghosts) {
+                auto ghost = dynamic_cast<Ghost*>(obj.get());
+                ghost->boozed = true;
+                ghost->boozedAge = 0;
+            }
+        }
+    }
+
+
 
     // Proces next directions
     if (scene.keyboard[GLFW_KEY_RIGHT]){ // Right

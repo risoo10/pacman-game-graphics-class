@@ -33,6 +33,10 @@ Drink::Drink() {
 
 bool Drink::update(Scene &scene, float dt) {
 
+    if(drinked){
+        return false;
+    }
+
     rotation.z += dt;
 
     generateModelMatrix();
