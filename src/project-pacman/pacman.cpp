@@ -29,10 +29,12 @@ Pacman::Pacman() {
 
     // Initialize static resources if needed
     if (!shader) shader = make_unique<Shader>(diffuse_vert_glsl, diffuse_frag_glsl);
-    if (!texture) texture = make_unique<Texture>(image::loadBMP("sphere.bmp"));
-    if (!mesh) mesh = make_unique<Mesh>("sphere.obj");
+    if (!texture) texture = make_unique<Texture>(image::loadBMP("pacman.bmp"));
+    if (!mesh) mesh = make_unique<Mesh>("pacman.obj");
 
     position.y = 0.2;
+
+    scale = {0.5, 0.5, 0.5};
 
 }
 
@@ -65,7 +67,7 @@ bool Pacman::update(Scene &scene, float dt) {
         auto food = dynamic_cast<Food*>(obj.get());
 
         // Food object
-        if (distance(position, food->position) < 0.4f) {
+        if (distance(position, food->position) < 0.6f) {
 
             // Set foot as eaten
             food->eaten = true;
@@ -78,7 +80,7 @@ bool Pacman::update(Scene &scene, float dt) {
 
         auto drink = dynamic_cast<Drink*>(obj.get());
 
-        if (distance(position, drink->position) < 0.4f) {
+        if (distance(position, drink->position) < 0.7f) {
 
             // Set drink as drinked
             drink->drinked = true;
@@ -147,6 +149,18 @@ bool Pacman::update(Scene &scene, float dt) {
 
     // Update position by movement
     position += movement;
+
+    // Update rotation based on direction
+    if(direction.x == 1 && direction.y == 0){
+        rotation.z = 0;
+    } else if(direction.x == -1 && direction.y == 0){
+        rotation.z = PI;
+    } else if(direction.x == 0 && direction.y == 1){
+        rotation.z = PI / 2;
+    } else if(direction.x == 0 && direction.y == -1){
+        rotation.z = 3 * PI / 2;
+    }
+
     position.x = (float)(round(position.x * 1000) / 1000.0); // Round to 3 decimal plates
     position.z = (float)(round(position.z * 1000) / 1000.0); // Round to 3 decimal plates
 
@@ -161,6 +175,10 @@ void Pacman::render(Scene &scene) {
 
     shader->use();
 
+
+    // Set up light
+    shader->setUniform("LightDirection", scene.lightDirection);
+
     // use camera
     shader->setUniform("ProjectionMatrix", scene.camera->projectionMatrix);
     shader->setUniform("ViewMatrix", scene.camera->viewMatrix);
@@ -168,6 +186,7 @@ void Pacman::render(Scene &scene) {
     // render mesh
     shader->setUniform("ModelMatrix", modelMatrix);
     shader->setUniform("Texture", *texture);
+
     mesh->render();
 
 }

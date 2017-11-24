@@ -3,11 +3,21 @@
 void Scene::update(float time) {
 
   // Update pacman
-  if(!pacman->update(*this, time)){
-    pacman = nullptr;
+  auto p = std::begin(pacman);
+
+
+
+  while (p != std::end(pacman)) {
+    // Update and remove from list if needed
+    auto obj = p->get();
+    if (!obj->update(*this, time))
+      p = pacman.erase(p); // NOTE: no need to call destructors as we store shared pointers in the scene
+    else
+      newPacmanPosition = obj->position;
+      ++p;
   }
 
-  glm::vec3 newPacmanPosition = pacman == nullptr ? glm::vec3{0, 0, 0} : pacman->getPosition();
+
 
   // Update camera
   camera->update(keyboard, time, newPacmanPosition);
@@ -82,7 +92,6 @@ void Scene::render() {
     obj->render(*this);
 
   // Render pacman
-  if(pacman){
-    pacman->render(*this);
-  }
+  for ( auto& obj : pacman )
+    obj->render(*this);
 }

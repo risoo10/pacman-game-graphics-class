@@ -34,9 +34,6 @@ class Scene {
     // Camera object
     std::unique_ptr<Camera> camera;
 
-    // Pacman object
-    std::unique_ptr<Pacman> pacman;
-
     // Mapa pre hru
     // Create Map
     short map[11][11] = {
@@ -66,6 +63,12 @@ class Scene {
 
     // Other objects
     std::list< std::unique_ptr<ObjectRen> > objects;
+
+    // Pacman for delete
+    std::list< std::unique_ptr<Pacman> > pacman;
+
+    // Pacman position for camera
+    glm::vec3 newPacmanPosition;
 
 
 

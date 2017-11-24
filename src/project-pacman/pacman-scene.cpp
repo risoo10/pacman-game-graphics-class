@@ -43,6 +43,10 @@ private:
      */
     void initScene() {
         scene.objects.clear();
+        scene.ghosts.clear();
+        scene.pacman.clear();
+        scene.foods.clear();
+        scene.drinks.clear();
 
         // Create a camera
         auto camera = make_unique<Camera>(40.0f, (float)SIZEX / (float)SIZEY, 0.1f, 100.0f);
@@ -79,7 +83,7 @@ private:
                     auto pacman = make_unique<Pacman>();
                     pacman->position.z = (10 - y) - scene.mapRadius;
                     pacman->position.x = x - scene.mapRadius;
-                    scene.pacman = move(pacman);
+                    scene.pacman.push_back(move(pacman));
                 } else if(scene.map[y][x] == 4){ // Ghost starts here
                     for(int i = 0; i < 4; i++){
                         auto ghost = make_unique<Ghost>();
