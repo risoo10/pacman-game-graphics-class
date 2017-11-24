@@ -24,10 +24,10 @@ Ghost::Ghost() {
 
     // Initialize static resources if needed
     if (!shader) shader = make_unique<Shader>(diffuse_vert_glsl, diffuse_frag_glsl);
-    if (!texture) texture = make_unique<Texture>(image::loadBMP("pineapple.bmp"));
-    if (!mesh) mesh = make_unique<Mesh>("cube.obj");
+    if (!texture) texture = make_unique<Texture>(image::loadBMP("ghost.bmp"));
+    if (!mesh) mesh = make_unique<Mesh>("ghost.obj");
 
-    scale = vec3{0.5f, 0.5f, 0.5f};
+    scale = vec3{0.08f, 0.08f, 0.08f};
 }
 
 
@@ -62,18 +62,22 @@ bool Ghost::update(Scene &scene, float dt) {
                 case 0: // Right
                     newDirection.x = 1;
                     newDirection.y = 0;
+                    rotation.z = PI / 2;
                     break;
                 case 1: // Left
                     newDirection.x = -1;
                     newDirection.y = 0;
+                    rotation.z = 3 * PI / 2;
                     break;
                 case 2: // Up
                     newDirection.x = 0;
                     newDirection.y = 1;
+                    rotation.z = PI;
                     break;
                 case 3: // Down
                     newDirection.x = 0;
                     newDirection.y = -1;
+                    rotation.z = 0;
                     break;
             }
 

@@ -23,10 +23,10 @@ Drink::Drink() {
 
     // Initialize static resources if needed
     if (!shader) shader = make_unique<Shader>(diffuse_vert_glsl, diffuse_frag_glsl);
-    if (!texture) texture = make_unique<Texture>(image::loadBMP("explosion.bmp"));
-    if (!mesh) mesh = make_unique<Mesh>("cube.obj");
+    if (!texture) texture = make_unique<Texture>(image::loadBMP("barrel.bmp"));
+    if (!mesh) mesh = make_unique<Mesh>("barrel.obj");
 
-    scale = vec3{0.35f, 0.35f, 0.35f};
+    //scale = vec3{0f, 0.35f, 0.35f};
 
     position.y = 0.2f;
 }
