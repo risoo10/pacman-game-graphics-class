@@ -5,19 +5,16 @@ void Scene::update(float time) {
   // Update pacman
   auto p = std::begin(pacman);
 
-
-
   while (p != std::end(pacman)) {
     // Update and remove from list if needed
     auto obj = p->get();
     if (!obj->update(*this, time))
       p = pacman.erase(p); // NOTE: no need to call destructors as we store shared pointers in the scene
-    else
-      newPacmanPosition = obj->position;
-      ++p;
+    else {
+        newPacmanPosition = obj->position;
+        ++p;
+    }
   }
-
-
 
   // Update camera
   camera->update(keyboard, time, newPacmanPosition);

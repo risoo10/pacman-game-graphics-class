@@ -36,22 +36,48 @@ bool Ghost::update(Scene &scene, float dt) {
 
     // If eaten die
     if(eaten){
+        // Clear zzz objects
+        zzzs.clear();
         return false;
     }
 
     // If boozed then slow
     if(boozed){
+        // Boozed started
+        if(boozedAge == 0){
+            position.x = (float)(round(position.x * 100) / 100.0); // Round to 2 decimal plates
+            position.z = (float)(round(position.z * 100) / 100.0);
+        }
+
+        // Create ZZZ objects
+        if(zzzs.empty()){
+            // Create Zzz
+            for(int i = 1; i < 5; i++){
+                auto zzz = make_unique<Zzz>();
+                zzz->position.x = position.x + 0.5;
+                zzz->rotation.z = i * PI / 2;
+                zzzs.push_back(move(zzz));
+            }
+        }
+
+
         boozedAge += 0.001;
         speed = slowSpeed;
 
+        // End of boozing
         if(boozedAge > maxBoozedAge){
+            zzzs.clear();
             boozed = false;
             boozedAge = 0;
+            position.x = (float)(round(position.x * 100) / 100.0); // Round to 2 decimal plates
+            position.z = (float)(round(position.z * 100) / 100.0);
+            speed = fastSpeed;
         }
 
     } else {
-        speed = fastSpeed;
+        speed = fastSpeed;;
     }
+
 
     // Random movement of the ghost
     if(inTheMiddle(position) && (!possibleMove(newDirection, position, scene) || (int)(linearRand(0, 3)) == 0)){
@@ -83,17 +109,22 @@ bool Ghost::update(Scene &scene, float dt) {
 
         } while(!possibleMove(newDirection, position, scene));
 
-        movement = vec3{newDirection.x * speed, 0, newDirection.y * speed * -1};
+        movement = vec3{newDirection.x, 0, newDirection.y * -1};
     }
 
     // Update position by movement
     if(dt) {
-        position += movement;
+        position += movement * speed;
     }
 
     // Round to 3 decimal plates for precise movement
-    position.x = (float)(round(position.x * 1000) / 1000.0); // Round to 3 decimal plates
-    position.z = (float)(round(position.z * 1000) / 1000.0); // Round to 3 decimal plates
+    position.x = (float)(round(position.x * 1000) / 1000.0); // Round to 2 decimal plates
+    position.z = (float)(round(position.z * 1000) / 1000.0); // Round to 2 decimal plates
+
+    // Simply update all zzzs
+    // They are clearred not by calling false on update
+    for ( auto& obj : zzzs )
+        obj->update(scene, dt, position);
 
 
     generateModelMatrix();
@@ -116,5 +147,9 @@ void Ghost::render(Scene &scene) {
     shader->setUniform("ModelMatrix", modelMatrix);
     shader->setUniform("Texture", *texture);
     mesh->render();
+
+    // Simply render all zzzs
+    for ( auto& obj : zzzs )
+        obj->render(scene);
 
 }

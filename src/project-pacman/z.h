@@ -1,16 +1,15 @@
 //
-// Created by Riso on 11/20/2017.
+// Created by Riso on 11/27/2017.
 //
 
-#ifndef PPGSO_GHOST_H
-#define PPGSO_GHOST_H
-
+#ifndef PPGSO_Z_H
+#define PPGSO_Z_H
 
 #include <ppgso.h>
 #include "object.h"
-#include "z.h"
 
-class Ghost final : public ObjectRen {
+
+class Zzz final : public ObjectRen {
 
 private:
     // Static resources (Shared between instances)
@@ -18,31 +17,14 @@ private:
     static std::unique_ptr<ppgso::Shader> shader;
     static std::unique_ptr<ppgso::Texture> texture;
 
-    float const fastSpeed = 0.005;
-    float const slowSpeed = 0.002;
-
-    float speed = fastSpeed;
-
-    float maxBoozedAge = 3;
-
-    glm::vec2 newDirection = {0,0};
-    glm::vec3 movement = {0,0,0};
-
-
-    // Foods
-    std::list< std::unique_ptr<Zzz> > zzzs;
 
 public:
 
-    // Ghost state
-    bool boozed = false;
+    // Set as eaten
     bool eaten = false;
 
-    float boozedAge = 0;
-
-
     // Create new Brick
-    Ghost();
+    Zzz();
 
     /*!
    * Update player position considering keyboard inputs
@@ -50,7 +32,9 @@ public:
    * @param dt Time delta
    * @return true to delete the object
    */
-    bool update(Scene &scene, float dt) override;
+    bool update(Scene &scene, float dt, glm::vec3 position);
+
+    bool update(Scene &scene, float dt) override ;
 
     /*!
      * Render player
@@ -61,4 +45,4 @@ public:
 };
 
 
-#endif //PPGSO_GHOST_H
+#endif //PPGSO_Z_H

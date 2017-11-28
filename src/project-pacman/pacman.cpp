@@ -24,6 +24,12 @@ unique_ptr<Texture> Pacman::texture;
 unique_ptr<Shader> Pacman::shader;
 
 
+vec3 linearInterpolation(vec3 a, vec3 b, float t){
+    vec3 result = (1 - t) * a + t * b;
+    return result;
+}
+
+
 // Constructor
 Pacman::Pacman() {
 
@@ -32,15 +38,84 @@ Pacman::Pacman() {
     if (!texture) texture = make_unique<Texture>(image::loadBMP("pacman.bmp"));
     if (!mesh) mesh = make_unique<Mesh>("pacman.obj");
 
+    rotation = {2 * PI, 2 * PI, 2 * PI};
+
     position.y = 0.2;
 
     scale = {0.5, 0.5, 0.5};
+
+    stopAnimation = false;
+    animationDuration = 0;
+    gameWon = false;
+    processedKeyframes = 0;
+
+    // Setup end keyframe animation
+    // First keyframe is as default
+    endAnimation[0].duration = 15;
+    // First keyframe
+    endAnimation[1].keyScale = {1, 0.2f, 1};
+    endAnimation[1].duration = 35;
+    // Second keyframe
+    endAnimation[2].keyScale = {1, 1.3, 1};
+    endAnimation[2].keyPosition = {1, 18, 1};
+    endAnimation[2].keyRotation = {1, 1, 5};
+    endAnimation[2].duration = 20;
+    // Third keyframe
+    endAnimation[3].keyScale = {1, 0.8, 1};
+    endAnimation[3].keyPosition = {1, 1, 1};
+    endAnimation[3].duration = 100;
+    // Fourth keyframe
+    endAnimation[4].keyScale = {1, 1, 1};
+    endAnimation[4].keyPosition = {1, 1, 1};
+
 
 }
 
 
 // Update function
 bool Pacman::update(Scene &scene, float dt) {
+
+
+    // Check if pacman eaten ALL foods
+    if(scene.maxFoods <= scene.eatenFood){
+        scene.eatenFood = 0;
+        gameWon = true;
+        scene.animate = false;
+
+        // Update keyframes with current coordinates of pacman
+        for(int i = 0; i < keyframeCount; i++){
+            endAnimation[i].keyRotation *= rotation;
+            endAnimation[i].keyScale *= scale;
+            endAnimation[i].keyPosition *= position;
+        }
+    }
+
+    // Keyframe animation in the end
+    if(gameWon == true && !stopAnimation){
+        Keyframe current = endAnimation[processedKeyframes];
+        Keyframe next = endAnimation[processedKeyframes + 1];
+
+        float t = animationDuration / current.duration;
+
+        position = linearInterpolation(current.keyPosition, next.keyPosition, t);
+        scale = linearInterpolation(current.keyScale, next.keyScale, t);
+        rotation = linearInterpolation(current.keyRotation, next.keyRotation, t);
+
+        animationDuration += 0.05;
+
+        if(animationDuration >= current.duration){
+            animationDuration = 0;
+            processedKeyframes++;
+        }
+
+        if(processedKeyframes == keyframeCount-1){
+            stopAnimation = true;
+            return false;
+        }
+
+        generateModelMatrix();
+        return true;
+    }
 
 
     // Hit detection with ghosts
@@ -53,7 +128,7 @@ bool Pacman::update(Scene &scene, float dt) {
             if(ghost->boozed){
                 // Set ghost as eaten and add 5 extra points
                 ghost->eaten = true;
-                eatenFood += 5;
+                scene.eatenFood += 2;
             } else {
                 // Game over
                 return false;
@@ -71,7 +146,7 @@ bool Pacman::update(Scene &scene, float dt) {
 
             // Set foot as eaten
             food->eaten = true;
-            eatenFood++;
+            scene.eatenFood++;
         }
     }
 

@@ -10,6 +10,14 @@
 #include <queue>
 #include "object.h"
 
+
+// Keyframe animation
+struct Keyframe {
+    glm::vec3 keyPosition = {1, 1, 1}, keyRotation = {1, 1, 1}, keyScale = {1, 1, 1};
+    float duration = 100;
+};
+
+
 class Pacman final : public ObjectRen {
 
 private:
@@ -18,15 +26,19 @@ private:
     static std::unique_ptr<ppgso::Shader> shader;
     static std::unique_ptr<ppgso::Texture> texture;
 
-    float const fastSpeed = 0.004;
+    float const fastSpeed = 0.005;
 
     glm::vec2 direction = {0, 0};
     glm::vec2 nextDirection = {0, 0};
     glm::vec3 movement = {0, 0, 0};
     float speed = fastSpeed;
 
-    int eatenFood = 0;
-
+    bool gameWon = false;
+    Keyframe endAnimation[5];
+    int keyframeCount = 5;
+    int processedKeyframes = 0;
+    float animationDuration = 0;
+    bool stopAnimation = false;
 
 public:
 

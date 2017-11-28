@@ -20,6 +20,7 @@
 #include "drink.h"
 #include "pacman.h"
 #include "ghost.h"
+#include "z.h"
 
 
 using namespace std;
@@ -35,7 +36,7 @@ const unsigned int SIZEY = 768;
 class SceneWindow : public Window {
 private:
     Scene scene;
-    bool animate = true;
+
 
     /*!
      * Reset and initialize the game scene
@@ -47,6 +48,10 @@ private:
         scene.pacman.clear();
         scene.foods.clear();
         scene.drinks.clear();
+
+        // Reset eaten food
+        scene.eatenFood = 0;
+        scene.animate = true;
 
         // Create a camera
         auto camera = make_unique<Camera>(40.0f, (float)SIZEX / (float)SIZEY, 0.1f, 100.0f);
@@ -61,8 +66,8 @@ private:
         scene.objects.push_back(move(floor));
 
         // Create walls and food from MAP
-        for(int y = 0; y < 11; y++){
-            for(int x = 0; x < 11; x++) {
+        for(int y = 0; y < scene.mapSize; y++){
+            for(int x = 0; x < scene.mapSize; x++) {
 
                 if(scene.map[y][x] == 1){ // Walls if map is 1
                     auto brick1 = make_unique<Brick>();
@@ -98,6 +103,7 @@ private:
     }
 
 public:
+
     /*!
      * Construct custom game window
      */
@@ -135,7 +141,7 @@ public:
 
         // Pause
         if (key == GLFW_KEY_P && action == GLFW_PRESS) {
-            animate = !animate;
+            scene.animate = !scene.animate;
         }
     }
 
@@ -148,7 +154,7 @@ public:
         static auto time = (float) glfwGetTime();
 
         // Compute time delta
-        float dt = animate ? (float) glfwGetTime() - time : 0;
+        float dt = scene.animate ? (float) glfwGetTime() - time : 0;
 
         time = (float) glfwGetTime();
 

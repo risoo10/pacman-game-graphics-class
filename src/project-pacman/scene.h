@@ -20,6 +20,9 @@
  */
 class Scene {
   public:
+
+    bool animate = true;
+
     /*!
      * Update all objects in the scene
      * @param time
@@ -36,6 +39,21 @@ class Scene {
 
     // Mapa pre hru
     // Create Map
+
+    int level = 1;
+
+    int maxFoods = 48;
+
+    int eatenFood = 0;
+
+    const short mapSize = 11;
+
+    // 1 == WALL
+    // 0 == FOOD
+    // 2 == DRINK
+    // 3 == PACMAN
+    // 4 == GHOST SOURCE
+
     short map[11][11] = {
             {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
             {1, 2, 0, 0, 1, 1, 0, 0, 0, 4, 1},
