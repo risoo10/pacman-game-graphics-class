@@ -16,12 +16,6 @@
 #include "brick.h"
 #include "floor.h"
 #include "enviroment.h"
-#include "food.h"
-#include "drink.h"
-#include "pacman.h"
-#include "ghost.h"
-#include "z.h"
-
 
 using namespace std;
 using namespace glm;
@@ -36,7 +30,6 @@ const unsigned int SIZEY = 768;
 class SceneWindow : public Window {
 private:
     Scene scene;
-
 
     /*!
      * Reset and initialize the game scene
@@ -121,6 +114,7 @@ public:
         glFrontFace(GL_CCW);
         glCullFace(GL_BACK);
 
+        scene.renderMap(scene.level);
         initScene();
     }
 
@@ -136,12 +130,19 @@ public:
 
         // Reset
         if (key == GLFW_KEY_R && action == GLFW_PRESS) {
+            scene.level = 1;
+            scene.gameWON = false;
             initScene();
         }
 
         // Pause
         if (key == GLFW_KEY_P && action == GLFW_PRESS) {
             scene.animate = !scene.animate;
+        }
+
+        // Won game
+        if (key == GLFW_KEY_N && action == GLFW_PRESS) {
+            scene.gameWON = true;
         }
     }
 
@@ -164,6 +165,25 @@ public:
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // Update and render all objects
+        if(scene.switchLevel) {
+            scene.switchLevel = false;
+            scene.level++;
+            scene.renderMap(scene.level);
+            initScene();
+            return;
+        }
+
+        // Check if game won
+        if(scene.gameWON){
+            scene.ghosts.clear();
+            scene.pacman.clear();
+            scene.foods.clear();
+            scene.drinks.clear();
+            // Create info panel
+            auto panel = make_unique<WonGamePanel>();
+            scene.objects.push_back(move(panel));
+        }
+
         scene.update(dt);
         scene.render();
     }

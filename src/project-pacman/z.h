@@ -23,6 +23,10 @@ public:
     // Set as eaten
     bool eaten = false;
 
+    float time = 0;
+
+    int index;
+
     // Create new Brick
     Zzz();
 

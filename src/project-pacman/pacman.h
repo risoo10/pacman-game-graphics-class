@@ -26,7 +26,7 @@ private:
     static std::unique_ptr<ppgso::Shader> shader;
     static std::unique_ptr<ppgso::Texture> texture;
 
-    float const fastSpeed = 0.005;
+    float const fastSpeed = 0.05;
 
     glm::vec2 direction = {0, 0};
     glm::vec2 nextDirection = {0, 0};
@@ -68,6 +68,8 @@ public:
 
 
     glm::vec3 getPosition();
+
+    glm::vec3 linearInterpolation(glm::vec3 a, glm::vec3 b, float t);
 
 };
 

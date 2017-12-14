@@ -68,6 +68,7 @@ void Scene::update(float time) {
       ++d;
   }
 
+
 }
 
 void Scene::render() {
@@ -91,4 +92,22 @@ void Scene::render() {
   // Render pacman
   for ( auto& obj : pacman )
     obj->render(*this);
+
+}
+
+void Scene::renderMap(int level) {
+    // Check level
+    if(level == 1){
+        for(int y = 0; y < 11; y++){
+            for(int x = 0; x < 11; x++){
+                map[y][x] = map1[y][x];
+            }
+        }
+    } else {
+        for(int y = 0; y < 11; y++){
+            for(int x = 0; x < 11; x++){
+                map[y][x] = map2[y][x];
+            }
+        }
+    }
 }

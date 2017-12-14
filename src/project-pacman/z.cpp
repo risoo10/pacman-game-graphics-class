@@ -33,18 +33,35 @@ Zzz::Zzz() {
 
 bool Zzz::update(Scene &scene, float dt, vec3 position) {
 
-    this->position.x = position.x;
-    this->position.z = position.z;
+    time += dt;
+    int x,y;
+    switch(index){
+        case 1:
+            x = 1;
+            y = 1;
+            break;
+        case 2:
+            x = -1;
+            y = 1;
+            break;
+        case 3:
+            x = 1;
+            y = -1;
+            break;
+        case 4:
+            x = -1;
+            y = -1;
+            break;
+    }
 
-    rotation.z += dt;
+    this->position.x = position.x + sin(time) * 0.7f * x;
+    this->position.z = position.z + cos(time) * 0.7f * y;
 
-    modelMatrix = translate(mat4(1.0f), this->position) *
-            translate(mat4(1.0f), position) *
-            orientate4(rotation) *
-            translate(mat4(1.0f), -position) *
-            glm::scale(mat4(1.0f), scale);
+    if(time > 2 * PI){
+        time = 0;
+    }
 
-
+    generateModelMatrix();
     return true;
 }
 

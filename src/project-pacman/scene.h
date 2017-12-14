@@ -11,6 +11,7 @@
 #include "ghost.h"
 #include "food.h"
 #include "drink.h"
+#include "wonGamePanel.h"
 
 
 /*
@@ -34,6 +35,8 @@ class Scene {
      */
     void render();
 
+    void renderMap(int level);
+
     // Camera object
     std::unique_ptr<Camera> camera;
 
@@ -41,6 +44,10 @@ class Scene {
     // Create Map
 
     int level = 1;
+
+    bool switchLevel = false;
+
+    bool gameWON = false;
 
     int maxFoods = 48;
 
@@ -54,7 +61,9 @@ class Scene {
     // 3 == PACMAN
     // 4 == GHOST SOURCE
 
-    short map[11][11] = {
+    short map[11][11];
+
+    short map1[11][11] = {
             {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
             {1, 2, 0, 0, 1, 1, 0, 0, 0, 4, 1},
             {1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 1},
@@ -67,6 +76,21 @@ class Scene {
             {1, 0, 2, 0, 1, 1, 1, 0, 0, 0, 1},
             {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
     };
+
+    short map2[11][11] = {
+            {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+            {1, 3, 0, 0, 0, 0, 0, 0, 0, 2, 1},
+            {1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1},
+            {1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1},
+            {1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1},
+            {1, 0, 0, 0, 1, 4, 0, 0, 0, 0, 1},
+            {1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1},
+            {1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1},
+            {1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1},
+            {1, 2, 0, 0, 0, 0, 0, 0, 0, 2, 1},
+            {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+    };
+
 
     short mapRadius = 5;
 
@@ -84,6 +108,7 @@ class Scene {
 
     // Pacman for delete
     std::list< std::unique_ptr<Pacman> > pacman;
+    
 
     // Pacman position for camera
     glm::vec3 newPacmanPosition;

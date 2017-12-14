@@ -18,12 +18,12 @@ private:
     static std::unique_ptr<ppgso::Shader> shader;
     static std::unique_ptr<ppgso::Texture> texture;
 
-    float const fastSpeed = 0.005;
-    float const slowSpeed = 0.002;
+    float const fastSpeed = 0.05;
+    float const slowSpeed = 0.02;
 
     float speed = fastSpeed;
 
-    float maxBoozedAge = 3;
+    float maxBoozedAge = 2;
 
     glm::vec2 newDirection = {0,0};
     glm::vec3 movement = {0,0,0};

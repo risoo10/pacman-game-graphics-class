@@ -45,8 +45,8 @@ bool Ghost::update(Scene &scene, float dt) {
     if(boozed){
         // Boozed started
         if(boozedAge == 0){
-            position.x = (float)(round(position.x * 100) / 100.0); // Round to 2 decimal plates
-            position.z = (float)(round(position.z * 100) / 100.0);
+            position.x = (float)(round(position.x * 10) / 10.0); // Round to 2 decimal plates
+            position.z = (float)(round(position.z * 10) / 10.0);
         }
 
         // Create ZZZ objects
@@ -54,14 +54,13 @@ bool Ghost::update(Scene &scene, float dt) {
             // Create Zzz
             for(int i = 1; i < 5; i++){
                 auto zzz = make_unique<Zzz>();
-                zzz->position.x = position.x + 0.5;
-                zzz->rotation.z = i * PI / 2;
+                zzz->index = i;
                 zzzs.push_back(move(zzz));
             }
         }
 
 
-        boozedAge += 0.001;
+        boozedAge += 0.01;
         speed = slowSpeed;
 
         // End of boozing
@@ -69,8 +68,8 @@ bool Ghost::update(Scene &scene, float dt) {
             zzzs.clear();
             boozed = false;
             boozedAge = 0;
-            position.x = (float)(round(position.x * 100) / 100.0); // Round to 2 decimal plates
-            position.z = (float)(round(position.z * 100) / 100.0);
+            position.x = (float)(round(position.x * 10) / 10.0); // Round to 2 decimal plates
+            position.z = (float)(round(position.z * 10) / 10.0);
             speed = fastSpeed;
         }
 

@@ -24,7 +24,7 @@ unique_ptr<Texture> Pacman::texture;
 unique_ptr<Shader> Pacman::shader;
 
 
-vec3 linearInterpolation(vec3 a, vec3 b, float t){
+vec3 Pacman::linearInterpolation(vec3 a, vec3 b, float t){
     vec3 result = (1 - t) * a + t * b;
     return result;
 }
@@ -63,7 +63,7 @@ Pacman::Pacman() {
     // Third keyframe
     endAnimation[3].keyScale = {1, 0.8, 1};
     endAnimation[3].keyPosition = {1, 1, 1};
-    endAnimation[3].duration = 100;
+    endAnimation[3].duration = 50;
     // Fourth keyframe
     endAnimation[4].keyScale = {1, 1, 1};
     endAnimation[4].keyPosition = {1, 1, 1};
@@ -101,7 +101,7 @@ bool Pacman::update(Scene &scene, float dt) {
         scale = linearInterpolation(current.keyScale, next.keyScale, t);
         rotation = linearInterpolation(current.keyRotation, next.keyRotation, t);
 
-        animationDuration += 0.05;
+        animationDuration += 1;
 
         if(animationDuration >= current.duration){
             animationDuration = 0;
@@ -110,6 +110,10 @@ bool Pacman::update(Scene &scene, float dt) {
 
         if(processedKeyframes == keyframeCount-1){
             stopAnimation = true;
+            scene.switchLevel = true;
+            if(scene.level == 2){
+                scene.gameWON = true;
+            }
             return false;
         }
 
